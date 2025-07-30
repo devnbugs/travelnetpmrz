@@ -55,10 +55,12 @@ def extract_and_rename(filepath):
         print("MRZ extraction failed:", e)
         # Everything will stay as default empty values
 
-    # === Generate safe filename ===
-    name_parts = [result["surname"]]
+    # === Generate filename in FIRSTNAME_SURNAME_OTHERNAME format ===
+    name_parts = []
     if result["firstname"]:
         name_parts.append(result["firstname"])
+    if result["surname"]:
+        name_parts.append(result["surname"])
     if result["othername"]:
         name_parts.append(result["othername"])
 
@@ -77,6 +79,7 @@ def extract_and_rename(filepath):
         raise
 
     return save_path, result
+
 
 
 # === INDEX + FILE UPLOAD ===
