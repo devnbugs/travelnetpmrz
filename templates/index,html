@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Travelnet Passport Reader</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background: #f7f7f7;
+        }
+        .form-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-box">
+    <h4 class="mb-3 text-center">Passport MRZ Bulk Uploader</h4>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="files" id="fileInput" multiple accept="image/*,.pdf" class="form-control mb-3" required>
+        <button type="submit" class="btn btn-primary w-100">Upload & Process</button>
+    </form>
+</div>
+
+<script>
+$(document).ready(function () {
+    $('#uploadForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        Swal.fire({
+            title: 'Processing...',
+            text: 'Please wait while we read and rename MRZs.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: '/',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            xhrFields: {
+                responseType: 'blob'  // Receive ZIP as blob
+            },
+            success: function (blob) {
+                Swal.close();
+
+                const now = new Date();
+                const zipName = `mrz_output_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate()}-${now.getHours()}_${now.getMinutes()}.zip`;
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = zipName;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+
+                Swal.fire('Done!', 'Download should start automatically.', 'success');
+            },
+            error: function () {
+                Swal.close();
+                Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
