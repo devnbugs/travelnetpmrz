@@ -1,4 +1,4 @@
-# travelnet-pmrz
+# travelnetpmrz
 
 A Flask-based Passport MRZ scanner that accepts image and PDF uploads, extracts passport details using `fastmrz`, renames the files accordingly, and returns a ZIP with renamed JPGs and a `data.json` file.
 
@@ -21,5 +21,5 @@ A Flask-based Passport MRZ scanner that accepts image and PDF uploads, extracts 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/devnbugs/travelnet-pmrz.git
+git clone https://github.com/devnbugs/travelnetpmrz.git
 cd travelnet-pmrz
